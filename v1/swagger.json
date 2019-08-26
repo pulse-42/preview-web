@@ -1,9 +1,9 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "description" : "This is a simple API",
+    "description" : "This is the draft API for Pulse Analytics pipeline 'Stage-C' (Resource Relations Network)",
     "version" : "1.0.0",
-    "title" : "Simple pulseTopic API",
+    "title" : "Pulse Analytics RRN API",
     "contact" : {
       "email" : "you@your-company.com"
     },
@@ -63,20 +63,51 @@
             "description" : "bad input parameter"
           }
         }
-      },
+      }
+    },
+    "/pulseTopic/people" : {
       "post" : {
         "tags" : [ "admins" ],
-        "summary" : "adds an pulseTopic item",
-        "operationId" : "addpulseTopic",
+        "summary" : "adds a PROJECT pulseTopic item",
+        "operationId" : "addpulseTopicPEOPLE",
         "description" : "Adds an item to the system",
         "consumes" : [ "application/json" ],
         "produces" : [ "application/json" ],
         "parameters" : [ {
           "in" : "body",
-          "name" : "genericPulseTopic",
-          "description" : "pulseTopic item to add",
+          "name" : "projectPulseTopic",
+          "description" : "Project pulseTopic item to add",
           "schema" : {
-            "$ref" : "#/definitions/genericPulseTopic"
+            "$ref" : "#/definitions/projectPulseTopic"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "item created"
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "409" : {
+            "description" : "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/pulseTopic/project" : {
+      "post" : {
+        "tags" : [ "admins" ],
+        "summary" : "adds a PROJECT pulseTopic item",
+        "operationId" : "addpulseTopicPROJECT",
+        "description" : "Adds an item to the system",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "projectPulseTopic",
+          "description" : "Project pulseTopic item to add",
+          "schema" : {
+            "$ref" : "#/definitions/projectPulseTopic"
           }
         } ],
         "responses" : {
@@ -121,20 +152,92 @@
         }
       }
     },
-    "/pulseTopic/project" : {
+    "/pulseTopic/subtopic" : {
       "post" : {
         "tags" : [ "admins" ],
-        "summary" : "adds a PROJECT pulseTopic item",
-        "operationId" : "addpulseTopicPROJECT",
+        "summary" : "adds a sub-topic under a main topic",
+        "operationId" : "addpulseSubTopic",
         "description" : "Adds an item to the system",
         "consumes" : [ "application/json" ],
         "produces" : [ "application/json" ],
         "parameters" : [ {
           "in" : "body",
-          "name" : "projectPulseTopic",
-          "description" : "Project pulseTopic item to add",
+          "name" : "pulseSubTopic",
+          "description" : "pulse sub-topic item to add",
           "schema" : {
-            "$ref" : "#/definitions/projectPulseTopic"
+            "$ref" : "#/definitions/pulseSubTopic"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "item created"
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "409" : {
+            "description" : "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/inventory" : {
+      "get" : {
+        "tags" : [ "developers" ],
+        "summary" : "searches inventory",
+        "operationId" : "searchInventory",
+        "description" : "By passing in the appropriate options, you can search for\navailable inventory in the system\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "searchString",
+          "description" : "pass an optional search string for looking up inventory",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "skip",
+          "description" : "number of records to skip for pagination",
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 0
+        }, {
+          "in" : "query",
+          "name" : "limit",
+          "description" : "maximum number of records to return",
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 0,
+          "maximum" : 50
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "search results matching criteria",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/InventoryItem"
+              }
+            }
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "admins" ],
+        "summary" : "adds an inventory item",
+        "operationId" : "addInventory",
+        "description" : "Adds an item to the system",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "inventoryItem",
+          "description" : "Inventory item to add",
+          "schema" : {
+            "$ref" : "#/definitions/InventoryItem"
           }
         } ],
         "responses" : {
@@ -207,9 +310,116 @@
           "example" : "408-867-5309"
         }
       }
+    },
+    "servicePulseTopic" : {
+      "required" : [ "name" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "example" : "generic default placeholder to extend the Topic definition"
+        },
+        "homePage" : {
+          "type" : "string",
+          "format" : "url",
+          "example" : "https://preview.pulse42.io"
+        },
+        "phone" : {
+          "type" : "string",
+          "example" : "408-867-5309"
+        }
+      }
+    },
+    "assetPulseTopic" : {
+      "required" : [ "name" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "example" : "generic default placeholder to extend the Topic definition"
+        },
+        "homePage" : {
+          "type" : "string",
+          "format" : "url",
+          "example" : "https://preview.pulse42.io"
+        },
+        "phone" : {
+          "type" : "string",
+          "example" : "408-867-5309"
+        }
+      }
+    },
+    "pulseSubTopic" : {
+      "required" : [ "name" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "example" : "sub topic"
+        },
+        "subtopicType" : {
+          "type" : "string"
+        }
+      }
+    },
+    "RRN-artifact" : {
+      "required" : [ "name" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "example" : "Resource relations network artifact"
+        },
+        "homePage" : {
+          "type" : "string",
+          "format" : "url",
+          "example" : "https://preview.pulse42.io"
+        },
+        "phone" : {
+          "type" : "string",
+          "example" : "408-867-5309"
+        }
+      }
+    },
+    "InventoryItem" : {
+      "type" : "object",
+      "required" : [ "id", "name", "manufacturer", "releaseDate" ],
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        },
+        "name" : {
+          "type" : "string",
+          "example" : "Widget Adapter"
+        },
+        "releaseDate" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "2016-08-29T09:12:33.001Z"
+        },
+        "manufacturer" : {
+          "$ref" : "#/definitions/Manufacturer"
+        }
+      }
+    },
+    "Manufacturer" : {
+      "required" : [ "name" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "example" : "ACME Corporation"
+        },
+        "homePage" : {
+          "type" : "string",
+          "format" : "url",
+          "example" : "https://www.acme-corp.com"
+        },
+        "phone" : {
+          "type" : "string",
+          "example" : "408-867-5309"
+        }
+      }
     }
   },
   "host" : "virtserver.swaggerhub.com",
-  "basePath" : "/BarnstormersLAB/Pulse42-StageC/1.0.0",
+  "basePath" : "/BarnsLAB/PulseStageC-1.1/1.0.0",
   "schemes" : [ "https" ]
 }
